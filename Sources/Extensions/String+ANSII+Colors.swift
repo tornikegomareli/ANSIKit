@@ -13,26 +13,31 @@ public extension String {
       .black
     )
   }
+
   var red: String {
     return color(
       .red
     )
   }
+
   var green: String {
     return color(
       .green
     )
   }
+
   var brown: String {
     return color(
       .brown
     )
   }
+
   var blue: String {
     return color(
       .blue
     )
   }
+  
   var magenta: String {
     return color(
       .magenta
