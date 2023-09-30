@@ -1,69 +1,130 @@
-//
 //  ANSIAttribute.swift
-//
 //
 //  Created by Tornike on 30/09/2023.
 //
 
 import Foundation
 
+/// Represents ANSI attributes for text styling and coloring.
+/// These attributes can be applied to strings for console output.
 public enum ANSIAttr: UInt8 {
-  /* text styling */
-  case normal         = 0
-  case bold           = 1
-  case dim            = 2
-  case italic         = 3
-  case underline      = 4
-  case blink          = 5
-  case overline       = 6
-  case inverse        = 7
-  case hidden         = 8
-  case strike         = 9
-  case noBold         = 21
-  case noDim          = 22
-  case noItalic       = 23
-  case noUnderline    = 24
-  case noBlink        = 25
-  case noOverline     = 26
-  case noInverse      = 27
-  case noHidden       = 28
-  case noStrike       = 29
-  /* foreground text coloring */
-  case black          = 30
-  case red            = 31
-  case green          = 32
-  case brown          = 33
-  case blue           = 34
-  case magenta        = 35
-  case cyan           = 36
-  case gray           = 37
-  case fore256Color   = 38
-  case `default`      = 39
-  case darkGray       = 90
-  case lightRed       = 91
-  case lightGreen     = 92
-  case yellow         = 93
-  case lightBlue      = 94
-  case lightMagenta   = 95
-  case lightCyan      = 96
-  case white          = 97
-  /* background text coloring */
-  case onBlack        = 40
-  case onRed          = 41
-  case onGreen        = 42
-  case onBrown        = 43
-  case onBlue         = 44
-  case onMagenta      = 45
-  case onCyan         = 46
-  case onGray         = 47
-  case back256Color   = 48
-  case onDefault      = 49
-  case onDarkGray     = 100
-  case onLightRed     = 101
-  case onLightGreen   = 102
-  case onYellow       = 103
-  case onLightBlue    = 104
-  case onLightMagenta = 105
-  case onLightCyan    = 106
-  case onWhite        = 107
+
+    // MARK: - Text Styling
+
+    /// Normal text, without any styling.
+    case normal         = 0
+    /// Bold text.
+    case bold           = 1
+    /// Dimmed text.
+    case dim            = 2
+    /// Italic text.
+    case italic         = 3
+    /// Underlined text.
+    case underline      = 4
+    /// Blinking text.
+    case blink          = 5
+    /// Overlined text.
+    case overline       = 6
+    /// Inverted text.
+    case inverse        = 7
+    /// Hidden text.
+    case hidden         = 8
+    /// Strike-through text.
+    case strike         = 9
+    /// Disable bold.
+    case noBold         = 21
+    /// Disable dim.
+    case noDim          = 22
+    /// Disable italic.
+    case noItalic       = 23
+    /// Disable underline.
+    case noUnderline    = 24
+    /// Disable blink.
+    case noBlink        = 25
+    /// Disable overline.
+    case noOverline     = 26
+    /// Disable inverse.
+    case noInverse      = 27
+    /// Disable hidden.
+    case noHidden       = 28
+    /// Disable strike-through.
+    case noStrike       = 29
+
+    // MARK: - Foreground Text Coloring
+
+    /// Black text color.
+    case black          = 30
+    /// Red text color.
+    case red            = 31
+    /// Green text color.
+    case green          = 32
+    /// Brown text color.
+    case brown          = 33
+    /// Blue text color.
+    case blue           = 34
+    /// Magenta text color.
+    case magenta        = 35
+    /// Cyan text color.
+    case cyan           = 36
+    /// Gray text color.
+    case gray           = 37
+    /// Foreground 256-color.
+    case fore256Color   = 38
+    /// Default text color.
+    case `default`      = 39
+    /// Dark gray text color.
+    case darkGray       = 90
+    /// Light red text color.
+    case lightRed       = 91
+    /// Light green text color.
+    case lightGreen     = 92
+    /// Yellow text color.
+    case yellow         = 93
+    /// Light blue text color.
+    case lightBlue      = 94
+    /// Light magenta text color.
+    case lightMagenta   = 95
+    /// Light cyan text color.
+    case lightCyan      = 96
+    /// White text color.
+    case white          = 97
+
+    // MARK: - Background Text Coloring
+
+    /// Black background color.
+    case onBlack        = 40
+    /// Red background color.
+    case onRed          = 41
+    /// Green background color.
+    case onGreen        = 42
+    /// Brown background color.
+    case onBrown        = 43
+    /// Blue background color.
+    case onBlue         = 44
+    /// Magenta background color.
+    case onMagenta      = 45
+    /// Cyan background color.
+    case onCyan         = 46
+    /// Gray background color.
+    case onGray         = 47
+    /// Background 256-color.
+    case back256Color   = 48
+    /// Default background color.
+    case onDefault      = 49
+    /// Dark gray background color.
+    case onDarkGray     = 100
+    /// Light red background color.
+    case onLightRed     = 101
+    /// Light green background color.
+    case onLightGreen   = 102
+    /// Yellow background color.
+    case onYellow       = 103
+    /// Light blue background color.
+    case onLightBlue    = 104
+    /// Light magenta background color.
+    case onLightMagenta = 105
+    /// Light cyan background color.
+    case onLightCyan    = 106
+    /// White background color.
+    case onWhite        = 107
 }
