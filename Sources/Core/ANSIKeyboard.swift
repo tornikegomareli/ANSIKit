@@ -23,8 +23,13 @@ public enum NonPrintableChar: Character {
 }
 
 public extension NonPrintableChar {
-  func char() -> Character { return self.rawValue }
-  func code() -> Int       { return Int(self.rawValue.asciiValue!) }
+  func char() -> Character {
+    return self.rawValue
+  }
+
+  func code() -> Int {
+    return Int(self.rawValue.asciiValue!)
+  }
 }
 
 // check for non-printable character
@@ -72,52 +77,58 @@ public enum ANSIMetaCode: UInt8 {
 
 private func SS3Letter(_ key: UInt8) -> ANSIKeyCode {
   switch key {
-  case ANSIKeyCode.f1.rawValue : return .f1
-  case ANSIKeyCode.f2.rawValue : return .f2
-  case ANSIKeyCode.f3.rawValue : return .f3
-  case ANSIKeyCode.f4.rawValue : return .f4
-  default                      : return .none
+  case ANSIKeyCode.f1.rawValue:
+    return .f1
+  case ANSIKeyCode.f2.rawValue:
+    return .f2
+  case ANSIKeyCode.f3.rawValue:
+    return .f3
+  case ANSIKeyCode.f4.rawValue:
+    return .f4
+  default:
+    return .none
   }
 }
 
 private func CSILetter(_ key: UInt8) -> ANSIKeyCode {
-  switch key {
-  case ANSIKeyCode.up.rawValue    : return .up
-  case ANSIKeyCode.down.rawValue  : return .down
-  case ANSIKeyCode.left.rawValue  : return .left
-  case ANSIKeyCode.right.rawValue : return .right
-  case ANSIKeyCode.home.rawValue  : return .home
-  case ANSIKeyCode.end.rawValue   : return .end
-  case ANSIKeyCode.f1.rawValue    : return .f1
-  case ANSIKeyCode.f2.rawValue    : return .f2
-  case ANSIKeyCode.f3.rawValue    : return .f3
-  case ANSIKeyCode.f4.rawValue    : return .f4
-  default                         : return .none
-  }
+  let keyMap: [UInt8: ANSIKeyCode] = [
+    ANSIKeyCode.up.rawValue: .up,
+    ANSIKeyCode.down.rawValue: .down,
+    ANSIKeyCode.left.rawValue: .left,
+    ANSIKeyCode.right.rawValue: .right,
+    ANSIKeyCode.home.rawValue: .home,
+    ANSIKeyCode.end.rawValue: .end,
+    ANSIKeyCode.f1.rawValue: .f1,
+    ANSIKeyCode.f2.rawValue: .f2,
+    ANSIKeyCode.f3.rawValue: .f3,
+    ANSIKeyCode.f4.rawValue: .f4
+  ]
+  return keyMap[key] ?? .none
 }
 
 private func CSINumber(_ key: UInt8) -> ANSIKeyCode {
-  switch key {
-  case 1                             : return .home
-  case 4                             : return .end
-  case ANSIKeyCode.insert.rawValue   : return .insert
-  case ANSIKeyCode.delete.rawValue   : return .delete
-  case ANSIKeyCode.pageUp.rawValue   : return .pageUp
-  case ANSIKeyCode.pageDown.rawValue : return .pageDown
-  case 11                            : return .f1
-  case 12                            : return .f2
-  case 13                            : return .f3
-  case 14                            : return .f4
-  case ANSIKeyCode.f5.rawValue       : return .f5
-  case ANSIKeyCode.f6.rawValue       : return .f6
-  case ANSIKeyCode.f7.rawValue       : return .f7
-  case ANSIKeyCode.f8.rawValue       : return .f8
-  case ANSIKeyCode.f9.rawValue       : return .f9
-  case ANSIKeyCode.f10.rawValue      : return .f10
-  case ANSIKeyCode.f11.rawValue      : return .f11
-  case ANSIKeyCode.f12.rawValue      : return .f12
-  default                            : return .none
-  }
+  let keyMap: [UInt8: ANSIKeyCode] = [
+    1: .home,
+    4: .end,
+    ANSIKeyCode.insert.rawValue: .insert,
+    ANSIKeyCode.delete.rawValue: .delete,
+    ANSIKeyCode.pageUp.rawValue: .pageUp,
+    ANSIKeyCode.pageDown.rawValue: .pageDown,
+    11: .f1,
+    12: .f2,
+    13: .f3,
+    14: .f4,
+    ANSIKeyCode.f5.rawValue: .f5,
+    ANSIKeyCode.f6.rawValue: .f6,
+    ANSIKeyCode.f7.rawValue: .f7,
+    ANSIKeyCode.f8.rawValue: .f8,
+    ANSIKeyCode.f9.rawValue: .f9,
+    ANSIKeyCode.f10.rawValue: .f10,
+    ANSIKeyCode.f11.rawValue: .f11,
+    ANSIKeyCode.f12.rawValue: .f12
+  ]
+
+  return keyMap[key] ?? .none
 }
 
 internal func isLetter(_ key: Int) -> Bool {
@@ -145,15 +156,21 @@ internal func isNumber(_ str: String) -> Bool {
 }
 
 private func CSIMeta(_ key: UInt8) -> [ANSIMetaCode] {
-  //! NOTE: if x = 1 then ~ becomes letter
   switch key {
-  case  2: return [.shift]                     // ESC [ x ; 2~
-  case  3: return [.alt]                       // ESC [ x ; 3~
-  case  4: return [.shift, .alt]               // ESC [ x ; 4~
-  case  5: return [.control]                   // ESC [ x ; 5~
-  case  6: return [.shift, .control]           // ESC [ x ; 6~
-  case  7: return [.alt,   .control]           // ESC [ x ; 7~
-  case  8: return [.shift, .alt,   .control]   // ESC [ x ; 8~
+  case  2:
+    return [.shift]
+  case  3:
+    return [.alt]
+  case  4:
+    return [.shift, .alt]
+  case  5:
+    return [.control]
+  case  6:
+    return [.shift, .control]
+  case  7:
+    return [.alt, .control]
+  case  8:
+    return [.shift, .alt, .control]
   default: return []
   }
 }
@@ -161,7 +178,9 @@ private func CSIMeta(_ key: UInt8) -> [ANSIMetaCode] {
 // read ANSI key code sequence
 public func readKey() -> (code: ANSIKeyCode, meta: [ANSIMetaCode]) {
   let nonBlock = isNonBlockingMode
-  if !nonBlock { enableNonBlockingTerminal() }
+  if !nonBlock { 
+    enableNonBlockingTerminal()
+  }
 
   var code = ANSIKeyCode.none
   var meta: [ANSIMetaCode] = []
@@ -183,8 +202,7 @@ public func readKey() -> (code: ANSIKeyCode, meta: [ANSIMetaCode]) {
       if isLetter(key) {                    // CSI + letter
         code = CSILetter(UInt8(key))
         break
-      }
-      else if isNumber(key) {               // CSI + numbers
+      } else if isNumber(key) {               // CSI + numbers
         cmd = String(unicode(key))          // collect numbers
         repeat {
           chr = readChar()                  // char after number has been read
@@ -200,28 +218,32 @@ public func readKey() -> (code: ANSIKeyCode, meta: [ANSIMetaCode]) {
             key = readCode()                // CSI + 1 + ; + meta + letter
             if isLetter(key) { code = CSILetter(UInt8(key)) }
             break
-          }
-          else {                            // CSI + numbers + ; + meta + ~
+          } else {                            // CSI + numbers + ; + meta + ~
             code = CSINumber(UInt8(val))
             _ = readCode()                  // dismiss the tilde (guaranted)
             break
           }
-        }
-        else {                              // CSI + numbers + ~ (guaranted)
+        } else {                              // CSI + numbers + ~ (guaranted)
           code = CSINumber(UInt8(val))
           break
         }
-      }
-      else { break }                        // neither letter nor numbers
-    }
-    else if cmd == SS3 {                    // found SS3 command
+      } else {
+        break
+      }                        // neither letter nor numbers
+    } else if cmd == SS3 {                    // found SS3 command
       key = readCode()
-      if isLetter(key) { code = SS3Letter(UInt8(key)) }
+      if isLetter(key) {
+        code = SS3Letter(UInt8(key))
+      }
       break
-    }
-    else { break }                          // unknown command is found
+    } else {
+      break
+    }                          // unknown command is found
   }
 
-  if !nonBlock { disableNonBlockingTerminal() }
+  if !nonBlock {
+    disableNonBlockingTerminal()
+  }
+
   return (code, meta)
 }
