@@ -175,75 +175,90 @@ private func CSIMeta(_ key: UInt8) -> [ANSIMetaCode] {
   }
 }
 
-// read ANSI key code sequence
 public func readKey() -> (code: ANSIKeyCode, meta: [ANSIMetaCode]) {
-  let nonBlock = isNonBlockingMode
-  if !nonBlock { 
-    enableNonBlockingTerminal()
-  }
+    let wasNonBlocking = isNonBlockingMode
+    if !wasNonBlocking {
+        enableNonBlockingTerminal()
+    }
 
-  var code = ANSIKeyCode.none
-  var meta: [ANSIMetaCode] = []
+    var code = ANSIKeyCode.none
+    let meta: [ANSIMetaCode] = []
 
-  // make sure there is data in stdin
-  if !keyPressed() { return (code, meta) }
+    guard keyPressed() else {
+        return (code, meta)
+    }
 
-  var val: Int    = 0
-  var key: Int    = 0
-  var cmd: String = ESC
-  var chr: Character
+    var cmd = ESC
+    var val: Int
+    var key: Int
 
-  while true {                              // read key sequence
-    cmd.append(readChar())                  // check for ESC combination
+    while true {
+        cmd.append(readChar())
 
-    if cmd == CSI {                         // found CSI command
-      key = readCode()
-
-      if isLetter(key) {                    // CSI + letter
-        code = CSILetter(UInt8(key))
-        break
-      } else if isNumber(key) {               // CSI + numbers
-        cmd = String(unicode(key))          // collect numbers
-        repeat {
-          chr = readChar()                  // char after number has been read
-          if isNumber(chr) { cmd.append(chr) }
-        } while isNumber(chr)
-        val = Int(cmd)!                     // guaranted valid number
-
-        if chr == ";" {                     // CSI + numbers + ;
-          cmd = String(readChar())          // CSI + numbers + ; + meta
-          if isNumber(cmd) { meta = CSIMeta(UInt8(cmd)!) }
-
-          if val == 1 {                     // CSI + 1 + ; + meta
-            key = readCode()                // CSI + 1 + ; + meta + letter
-            if isLetter(key) { code = CSILetter(UInt8(key)) }
+        if cmd == CSI {
+            (code, val, key) = handleCSICommand()
+            if code != .none {
+                break
+            }
+        } else if cmd == SS3 {
+            key = readCode()
+            if isLetter(key) {
+                code = SS3Letter(UInt8(key))
+            }
             break
-          } else {                            // CSI + numbers + ; + meta + ~
-            code = CSINumber(UInt8(val))
-            _ = readCode()                  // dismiss the tilde (guaranted)
+        } else {
             break
-          }
-        } else {                              // CSI + numbers + ~ (guaranted)
-          code = CSINumber(UInt8(val))
-          break
         }
-      } else {
-        break
-      }                        // neither letter nor numbers
-    } else if cmd == SS3 {                    // found SS3 command
-      key = readCode()
-      if isLetter(key) {
-        code = SS3Letter(UInt8(key))
-      }
-      break
+    }
+
+    if !wasNonBlocking {
+        disableNonBlockingTerminal()
+    }
+
+    return (code, meta)
+}
+
+private func handleCSICommand() -> (ANSIKeyCode, Int, Int) {
+    var code = ANSIKeyCode.none
+    var val = 0
+    let key = readCode()
+
+    if isLetter(key) {
+        code = CSILetter(UInt8(key))
+        return (code, val, key)
+    } else if isNumber(key) {
+        (code, val) = handleCSINumbers(Int(key))
+        return (code, val, key)
+    }
+
+    return (code, val, key)
+}
+
+private func handleCSINumbers(_ key: Int) -> (ANSIKeyCode, Int) {
+    var code = ANSIKeyCode.none
+    var val: Int = key
+    var cmd = String(val)
+    var chr: Character
+
+    repeat {
+        chr = readChar()
+        if isNumber(chr) {
+            cmd.append(chr)
+        }
+    } while isNumber(chr)
+
+    val = Int(cmd)!
+
+    if chr == ";" {
+        _ = handleCSIMeta()
     } else {
-      break
-    }                          // unknown command is found
-  }
+        code = CSINumber(UInt8(val))
+    }
 
-  if !nonBlock {
-    disableNonBlockingTerminal()
-  }
+    return (code, val)
+}
 
-  return (code, meta)
+private func handleCSIMeta() -> [ANSIMetaCode] {
+    let cmd = String(readChar())
+    return isNumber(cmd) ? CSIMeta(UInt8(cmd)!) : []
 }
