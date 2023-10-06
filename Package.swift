@@ -12,13 +12,9 @@ let package = Package(
             name: "ANSIKit",
             targets: ["ANSIKit"]),
     ],
-    dependencies: [
-      .package(url: "https://github.com/realm/SwiftLint", branch: "main")
-    ],
     targets: [
         .target(
-            name: "ANSIKit",
-            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
+            name: "ANSIKit"
         ),
         .testTarget(
             name: "ANSIKitTests",
