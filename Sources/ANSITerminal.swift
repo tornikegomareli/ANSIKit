@@ -57,7 +57,7 @@ internal func enableNonBlockingTerminal(rawMode: Bool = false) {
   // configure non-blocking and non-echoing terminal mode
   var nonBlockTerm = defaultTerminal
   if rawMode {
-    //! full raw mode without any input processing at all
+    // Full raw mode without any input processing at all
     cfmakeraw(&nonBlockTerm)
   } else {
     // disable CANONical mode and ECHO-ing input
