@@ -19,17 +19,28 @@ public enum CursorStyle: UInt8 {
 }
 
 public func setCursorStyle(_ style: CursorStyle, blinking: Bool = true) {
-  if blinking { write(CSI+"\(style.rawValue) q") }
-  else { write(CSI+"\(style.rawValue + 1) q") }
+  if blinking {
+      write(CSI+"\(style.rawValue) q")
+  } else { 
+      write(CSI+"\(style.rawValue + 1) q")
+  }
 }
 
 #if os(macOS)
 public func storeCursorPosition(isANSI: Bool = false) {
-  if isANSI { write(CSI,"s") } else { write(ESC,"7") }
+  if isANSI { 
+      write(CSI,"s")
+  } else {
+      write(ESC,"7")
+  }
 }
 #else
 public func storeCursorPosition(isANSI: Bool = true) {
-  if isANSI { write(CSI,"s") } else { write(ESC,"7") }
+    if isANSI {
+        write(CSI,"s")
+    } else {
+        write(ESC,"7")
+    }
 }
 #endif
 
