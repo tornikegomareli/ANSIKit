@@ -45,6 +45,8 @@ public enum NonPrintableChar: Character {
   /// Delete character.
   case del       = "\u{7F}"   // DEL
 
+  /// Need to add arrow keys
+
   /// Returns the `Character` value of the non-printable character.
   public func char() -> Character {
     return self.rawValue
