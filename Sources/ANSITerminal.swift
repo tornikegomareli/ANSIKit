@@ -50,7 +50,7 @@ public private(set) var isNonBlockingMode = false
 }
 
 /// Disables non-blocking terminal mode and restores default settings.
-func disableNonBlockingTerminal() {
+public func disableNonBlockingTerminal() {
   // restore default terminal mode
   tcsetattr(STDIN_FILENO, TCSANOW, &defaultTerminal)
   isNonBlockingMode = false
@@ -58,7 +58,7 @@ func disableNonBlockingTerminal() {
 
 /// Enables non-blocking terminal mode.
 /// - Parameter rawMode: Whether to use raw mode.
-func enableNonBlockingTerminal(rawMode: Bool = false) {
+public func enableNonBlockingTerminal(rawMode: Bool = false) {
   // store current terminal mode
   tcgetattr(STDIN_FILENO, &defaultTerminal)
   atexit(disableNonBlockingTerminal)
