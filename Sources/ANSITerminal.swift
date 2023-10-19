@@ -99,6 +99,23 @@ public func readChar() -> Character {
   return res < 0 ? "\0" : Character(UnicodeScalar(key))
 }
 
+public func safeReadChar() -> Character {
+  var buffer: [UInt8] = Array(repeating: 0, count: 3)
+  let res = read(STDIN_FILENO, &buffer, 3)
+
+  if res < 0 {
+    return "\0"
+  }
+
+  // Check for arrow keys and ignore them
+  if buffer[0] == 27 && buffer[1] == 91 {
+    return readChar() // Ignore and read the next character
+  }
+
+  return Character(UnicodeScalar(buffer[0]))
+}
+
+
 /// Reads an ASCII code from standard input.
 /// - Returns: The ASCII code read.
 public func readCode() -> Int {
