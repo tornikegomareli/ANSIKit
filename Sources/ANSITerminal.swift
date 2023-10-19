@@ -135,6 +135,8 @@ public func readMultipleCharInsideReadBuffer() -> Character {
   // Check for arrow keys
   if buffer[0] == 27 && buffer[1] == 91 {
     // It's an arrow key, so we ignore it and read the next character.
+    print(buffer[2..<bytesRead])
+    print(buffer)
     internalBuffer.append(contentsOf: buffer[2..<bytesRead])
     return readMultipleCharInsideReadBuffer()
   } else {
