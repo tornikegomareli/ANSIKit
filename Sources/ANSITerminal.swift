@@ -100,25 +100,43 @@ public func readChar() -> Character {
 }
 
 public func safeReadChar() -> Character {
-  var buffer: [UInt8] = Array(repeating: 0, count: 3)
-  var bytesRead = read(STDIN_FILENO, &buffer, 3)
+  var buffer: UInt8 = 0
+  let bytesRead = read(STDIN_FILENO, &buffer, 1)
 
   if bytesRead < 0 {
     return "\0"
   }
 
-  // Check for arrow keys
-  if buffer[0] == 27 && buffer[1] == 91 {
-    // It's an arrow key, so we ignore it and read the next character.
+  if buffer == 27 {
+    // Skip two more bytes assuming it's an arrow key
+    _ = read(STDIN_FILENO, &buffer, 1)
+    _ = read(STDIN_FILENO, &buffer, 1)
     return safeReadChar()
-  } else if buffer[0] == 27 {
-    // It's an escape sequence but not an arrow key, read the next character
-    return safeReadChar()
-  } else {
-    // It's a regular character
-    return Character(UnicodeScalar(buffer[0]))
   }
+
+  return Character(UnicodeScalar(buffer))
 }
+
+//public func safeReadChar() -> Character {
+//  var buffer: [UInt8] = Array(repeating: 0, count: 3)
+//  var bytesRead = read(STDIN_FILENO, &buffer, 3)
+//
+//  if bytesRead < 0 {
+//    return "\0"
+//  }
+//
+//  // Check for arrow keys
+//  if buffer[0] == 27 && buffer[1] == 91 {
+//    // It's an arrow key, so we ignore it and read the next character.
+//    return safeReadChar()
+//  } else if buffer[0] == 27 {
+//    // It's an escape sequence but not an arrow key, read the next character
+//    return safeReadChar()
+//  } else {
+//    // It's a regular character
+//    return Character(UnicodeScalar(buffer[0]))
+//  }
+//}
 
 
 /// Reads an ASCII code from standard input.
