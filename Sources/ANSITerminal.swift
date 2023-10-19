@@ -101,18 +101,23 @@ public func readChar() -> Character {
 
 public func safeReadChar() -> Character {
   var buffer: [UInt8] = Array(repeating: 0, count: 3)
-  let res = read(STDIN_FILENO, &buffer, 3)
+  var bytesRead = read(STDIN_FILENO, &buffer, 3)
 
-  if res < 0 {
+  if bytesRead < 0 {
     return "\0"
   }
 
-  // Check for arrow keys and ignore them
+  // Check for arrow keys
   if buffer[0] == 27 && buffer[1] == 91 {
-    return readChar() // Ignore and read the next character
+    // It's an arrow key, so we ignore it and read the next character.
+    return safeReadChar()
+  } else if buffer[0] == 27 {
+    // It's an escape sequence but not an arrow key, read the next character
+    return safeReadChar()
+  } else {
+    // It's a regular character
+    return Character(UnicodeScalar(buffer[0]))
   }
-
-  return Character(UnicodeScalar(buffer[0]))
 }
 
 
