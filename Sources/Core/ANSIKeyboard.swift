@@ -308,10 +308,6 @@ public func readKey() -> (code: ANSIKeyCode, meta: [ANSIMetaCode]) {
     var code = ANSIKeyCode.none
     let meta: [ANSIMetaCode] = []
 
-    guard keyPressed() else {
-        return (code, meta)
-    }
-
     var cmd = ESC
     var val: Int
     var key: Int
