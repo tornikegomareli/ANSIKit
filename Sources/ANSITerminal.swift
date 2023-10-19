@@ -91,18 +91,9 @@ public func keyPressed() -> Bool {
   return poll(&fds, 1, 0) > 0
 }
 
-public var internalBuffer: [UInt8] = []
-
 /// Reads a character from standard input.
 /// - Returns: The character read.
 public func readChar() -> Character {
-  print(internalBuffer)
-  if !internalBuffer.isEmpty {
-    let char = internalBuffer.removeFirst()
-    print(Character(UnicodeScalar(char)))
-    return Character(UnicodeScalar(char))
-  }
-
   var key: UInt8 = 0
   let res = read(STDIN_FILENO, &key, 1)
   return res < 0 ? "\0" : Character(UnicodeScalar(key))
@@ -136,7 +127,10 @@ public func readMultipleCharInsideReadBuffer() -> Character {
 
   // Check for arrow keys
   if buffer[0] == 27 && buffer[1] == 91 {
-    internalBuffer.append(buffer[2])
+    // It's an arrow key, so we ignore it and read the next character.
+    return readMultipleCharInsideReadBuffer()
+  } else if buffer[0] == 27 {
+    // It's an escape sequence but not an arrow key, read the next character
     return readMultipleCharInsideReadBuffer()
   } else {
     // It's a regular character
