@@ -98,6 +98,7 @@ public var internalBuffer: [UInt8] = []
 public func readChar() -> Character {
   if !internalBuffer.isEmpty {
     let char = internalBuffer.removeFirst()
+    print(Character(UnicodeScalar(char)))
     return Character(UnicodeScalar(char))
   }
 
