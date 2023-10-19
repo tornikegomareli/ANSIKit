@@ -96,6 +96,7 @@ public var internalBuffer: [UInt8] = []
 /// Reads a character from standard input.
 /// - Returns: The character read.
 public func readChar() -> Character {
+  print(internalBuffer)
   if !internalBuffer.isEmpty {
     let char = internalBuffer.removeFirst()
     print(Character(UnicodeScalar(char)))
