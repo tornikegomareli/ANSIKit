@@ -134,6 +134,8 @@ public func readMultipleCharInsideReadBuffer() -> Character {
 
   // Check for arrow keys
   if buffer[0] == 27 && buffer[1] == 91 {
+    let char = buffer[2]
+    print(Character(UnicodeScalar(char)))
     internalBuffer.append(buffer[0])
     return readMultipleCharInsideReadBuffer()
   } else {

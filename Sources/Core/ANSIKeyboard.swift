@@ -318,7 +318,7 @@ public func readKey() -> (code: ANSIKeyCode, meta: [ANSIMetaCode]) {
 
     while true {
         cmd.append(readChar())
-        print(readChar())
+
         if cmd == CSI {
             (code, val, key) = handleCSICommand()
             if code != .none {
